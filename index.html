@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Fashion Designer</title>
+</head>
+
+<style type="text/css">
+  button,
+  div
+  form,
+  input {
+    margin: 10px;
+  }
+</style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Fashion Designer</h1>
+
+    <div id="buttons-view"></div>
+
+    <form id="designer-form">
+        <label for="designer-input">Look for a Designers:</label>
+        <input type="text" id="designer-input">
+        <br>
+        <input id="add-designer" type="submit" value="Add Designer!">
+    </form>
+    
+
+     <div id="gifs-appear-here">
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+var designers=["Carl Lagerfeld", "Donatella Versace", "Oliver Rousting","Dolce & Gabbana"];
+
+    function displaydesignerInfo() {
+      var designer = $(this).attr("data-name");
+ var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        designer + "&api_key=D9hobdIX1BT7ooUCSodLMMSyQN1TCiv0&limit=10";
+
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }) .then(function(response) {
+        console.log(response);
+
+//         console.log(queryURL);
+        //crating div to hold designer
+        var designerDiv = $("<div class='designer'>");
+
+        //store response data
+          var rating = response.data.rating;
+
+          //create element to have rating displayed
+        var p = $("<p>").text("Rating:" + rating);
+
+        designerDiv.append(p);
+
+        var imageUrl = response.data.images.fixed_height.url;
+        var image =$("<img>").attr("src", imageUrl);
+
+          $('#gifs-appear-here').prepend(designerDiv);
+
+          console.log(response);
+
+      });
+    }
+
+//function for displaying designer Data
+ function renderButtons() {
+
+// Deleting the movies prior to adding new movies
+$("#buttons-view").empty();
+
+// Looping through the array of designers
+for (var i = 0; i < designers.length; i++) {
+
+    // Then dynamicaly generating buttons for each designer in the array
+    // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+    var a = $("<button>");
+    // Adding a class of designer-btn to our button
+    a.addClass("designer-btn");
+    // Adding a data-attribute
+    a.attr("data-name", designers[i]);
+    // Providing the initial button text
+    a.text(designers[i]);
+    // Adding the button to the buttons-view div
+    $("#buttons-view").append(a);
+  }
+}
+
+$("#add-designer").on("click", function(event) {
+        event.preventDefault();
+        // This line grabs the input from the textbox
+        var designer = $("#designer-input").val().trim();
+
+        // Adding designer from the textbox to our array
+        designers.push(designer);
+
+        // Calling renderButtons which handles the processing of our movie array
+        renderButtons();
+      });
+
+        $(document).on("click",".designer-btn",displaydesignerInfo);
+
+
+renderButtons();
+
+  </script>
+  </div>
+</body>
+
+</html>
+
